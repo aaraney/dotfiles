@@ -1,0 +1,9 @@
+# Files and dirs to ignore
+
+\.DS_Store
+
+\.git
+\.gitignore
+
+# Ignore editor buffers
+.+~
