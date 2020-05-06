@@ -1,0 +1,7 @@
+#!/bin/bash
+
+case "${1#*.}" in
+	"tex") pdflatex "${1%.tex}";;
+	"py") python "$1" ;;
+	"md") pandoc "$1" --pdf-engine=xelatex -o "${1%.md}".pdf;;
+esac

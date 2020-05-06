@@ -1,0 +1,7 @@
+#!/bin/bash
+
+BN=$(basename "$1")
+FN="$HOME/Box Sync/papers/${BN%.pdf}_n.md"
+pdfinfo "$1" | grep -iE "(title|author)" | sed -E "s/  +//g" | awk -F ':' '{print "> "$2 "\"}' >> "$FN"
+echo "---------" >> "$FN"
+cat $HOME/Dropbox/markdown/paper_n_template.md >> "$FN"

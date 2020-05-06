@@ -1,0 +1,80 @@
+#!/bin/bash
+
+FN="$1"
+PAPER_PATH="$HOME/Box Sync/papers/"
+
+add_paper(){
+	# Paper name
+	PN=$(greadlink -f "$1")
+	# Pass i arg to prompt user for override
+	mv_val=$(mv -v -i "$PN" "$PAPER_PATH" 2> >(tee /dev/tty))
+	ec=$(echo "$mv_val" | grep -o "not")
+	if [[ "${#ec}" -eq 0 ]]; then
+		BN=$(basename "$PN")
+		mklitnote "${PAPER_PATH}${BN}"
+	fi
+}
+
+display_help(){
+	echo "    lit -- a tool for adding and editing papers and notes"
+	echo
+	echo "    a     add paper and note papers folder"
+	echo "    l     list all papers in papers folder"
+	echo "    n     read notes on a paper in pdf format"
+	echo "    r     read paper using Skim pdf viewer"
+	echo "    R     read paper and edit notes using Skim and vim"
+}
+
+pdf_n(){
+	res="$(find  "$PAPER_PATH" -iname "*.md" | xargs -I {} basename {} | \
+		sort -f | fzf --tac)"
+	pandoc --from markdown "${PAPER_PATH}/${res}" --pdf-engine=xelatex \
+		-o "${TMPDIR}/${res%.md}.pdf" \
+       	&& open -a /Applications/Skim.app "${TMPDIR}/${res%.md}.pdf"
+}
+
+pdf_so(){
+	if [[ $# -gt 0 ]]; then
+		res="$(find  "$PAPER_PATH" -iname "*.md" | xargs -I {} basename {} | sort -f | fzf --tac)"
+		open -a /Applications/Skim.app/ "${PAPER_PATH}${res%_n.md}.pdf"
+		vim "${PAPER_PATH}${res}"
+	else
+		res="$(find  "$PAPER_PATH" -iname "*.pdf" | xargs -I {} basename {} | sort -f | fzf --tac)"
+		open -a /Applications/Skim.app/ "${PAPER_PATH}${res}"
+	fi	
+}
+
+if [[ $# -eq 0 ]]; then
+	display_help
+fi
+
+while [[ $# -gt 0 ]]; do
+	case $1 in
+		"-h"|"h")
+			display_help
+		;;
+		"-l"|"l")
+		echo "Papers:"
+		find "$PAPER_PATH" -iname "*.pdf" | xargs -I {} basename {} | sort -f
+		;;
+	"-n"|"n")
+		pdf_n
+		;;
+		"-r"|"r")
+		pdf_so
+		;;
+		"-R"|"R")
+		pdf_so 1
+		;;
+		"-a"|"a")
+	if [[ "$#" -lt 2 ]]; then
+		echo "You did not enter a pdf to add"
+		exit
+	else
+		add_paper "${2}"
+		shift
+	fi
+	;;
+	esac
+	shift
+done

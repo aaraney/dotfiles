@@ -1,0 +1,11 @@
+# Dock setup
+# Obviously killall Dock after
+defaults write com.apple.dock autohide-delay -int 0
+defaults write com.apple.dock autohide-time-modifier -int 0
+defaults write com.apple.dock persistent-apps -array-add '{"tile-type"="spacer-tile";}'
+
+# Finder path in title bar
+defaults write com.apple.finder _FXShowPosixPathInTitle -bool true; killall Finder
+
+# Keyboard 
+defaults write -g ApplePressAndHoldEnabled -bool false

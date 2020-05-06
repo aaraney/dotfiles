@@ -1,0 +1,3 @@
+#!/bin/bash
+
+python3 $HOME/.scripts/subset_netcdf.py "$1" "$2" "$3"

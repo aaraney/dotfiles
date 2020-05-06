@@ -1,0 +1,15 @@
+[submodule "vim/.vim/plug/vim-hybrid-material"]
+	path = vim/.vim/plug/vim-hybrid-material
+	url = ./vim/.vim/plug/vim-hybrid-material
+[submodule "vim/.vim/plug/vim-surround"]
+	path = vim/.vim/plug/vim-surround
+	url = ./vim/.vim/plug/vim-surround
+[submodule "vim/.vim/plug/goyo.vim"]
+	path = vim/.vim/plug/goyo.vim
+	url = ./vim/.vim/plug/goyo.vim
+[submodule "vim/.vim/plug/delimitmate"]
+	path = vim/.vim/plug/delimitmate
+	url = ./vim/.vim/plug/delimitmate
+[submodule "vim/.vim/plug/nerdtree"]
+	path = vim/.vim/plug/nerdtree
+	url = ./vim/.vim/plug/nerdtree

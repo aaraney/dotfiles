@@ -1,0 +1,180 @@
+#!/usr/bin/env bash
+
+# functions
+
+n(){
+# Resolves issue with nnn not being able to
+# quit and cd to a directory. GitHub issues seems
+# to show that this is just a Mac problem
+    nnn "$@"
+
+    if [ -f $NNN_TMPFILE ]; then
+        . $NNN_TMPFILE
+        rm $NNN_TMPFILE
+    fi
+}
+nwmd(){
+	docker run --rm -it -v "$(pwd)":/replica --entrypoint "/bin/sh" aaraney/nwm-djs:2.0
+}
+cite_author(){
+	echo "$*" | sed -E "s/[0-9]+//g" | tr ',' '\n' | sed -E 's/^ +//g' | awk -F " " '{sn=$NF; $NF=""; print sn", "$0}' | tee >(pbcopy)
+}
+fo(){
+
+	f=$(fzf)
+
+	if [ -f "$f" ];
+	then
+		case "${f##*.}" in
+			"pdf" ) open -a /Applications/Skim.app "$f" ;;
+			"doc" | "docx" ) open "$f" ;;
+			*) vim "$f" ;;
+		esac
+	else
+		:
+	fi
+}
+ff(){
+	f=$(fzf)
+	if [ $? -eq 0 ]; then
+		cd $(dirname "$f")
+	else
+		:
+	fi
+}
+panpdf(){
+if [ $# -eq 1 ];
+then
+	pandoc "$1" --pdf-engine=xelatex -o "${1%.md}".pdf && open -a /Applications/Skim.app "${1%.md}.pdf"
+elif [ "$1" = "-g" ]; then
+	pandoc "$2" --pdf-engine=xelatex --from gfm -o "${2%.md}".pdf && open -a /Applications/Skim.app "${2%.md}.pdf"
+fi
+}
+
+qfind(){
+	find "$1" -iname "$2" 2>&1 | grep -v "Permission denied"
+}
+
+homeworktex(){
+	cp $HOME/Dropbox/latex/documents/doc_temp.tex ./"$1".tex
+}
+
+note(){
+	cp $HOME/Dropbox/markdown/notes-template.md ./"$1".md
+}
+
+se() {
+	du -a $HOME/docs/ $HOME/Downloads/ | awk '{print $2}' | fzf | xargs -o $EDITOR ;
+}
+
+so() {
+	du -a $HOME/docs/ $HOME/Downloads/ | awk '{print $2}' | fzf | xargs -o open ;
+}
+
+homeworkmd(){
+	cp $HOME/Dropbox/markdown/template.md ./"$1".md
+}
+
+beamer(){
+	cp $HOME/Dropbox/latex/beamer/beamer_template/beamer_template.tex ./"$1".tex
+}
+
+nodata(){
+	gdal_calc.py -A "$1" --outfile="${1%.tif}"_fixed.tif --calc="A*(A>0)"
+}
+
+ns(){
+# Remove extra spaces from messed up keyboard
+echo "$1" | sed -E 's/  +/ /g' | pbcopy
+}
+
+v(){
+	gvim -v "$1"
+}
+
+pptx_to_pdf(){
+	soffice --headless --invisible --convert-to pdf "$1" "${1%.pptx}".pdf
+}
+
+pdf(){
+	open -a /Applications/Skim.app "$1"
+}
+
+pantex(){
+	pandoc -r markdown-auto_identifiers -w latex "$1" -s --template="$HOME/Dropbox/latex/documents/template.latex" -t latex > "${1%.md}".tex
+}
+
+var(){ 
+	egrep "(float|short|int|double|char)"
+}
+
+youtube_gif(){
+	# Takes in youtube url and a file fame and outputs a gif
+	[[ "$#" -lt 2 ]] && \
+	printf "Not enough arguments requires url and output filename\n" \
+	&& return;
+
+	# Time helper functions
+	parse_time_to_seconds(){
+		read h m s <<< $(echo "$1" | tr ':' ' ');
+		echo "($h * 3600) + ($m * 60) + $s" | bc
+	}
+
+	while [[ $# -gt 0 ]]; do
+		case $1 in
+			"-i" | "-I" )
+				shift
+				URL="$1"
+				;;
+			"-o" | "-O" )
+				shift
+				OUTPUT_FN="$1"
+				;;
+			"-s" | "-S" )
+				shift
+				START_TIME="$1"
+				START_TIME_SEC=$(parse_time_to_seconds "$1")
+				;;
+			"-e" | "-E" )
+				shift
+				END_TIME=$(parse_time_to_seconds "$1")
+				;;
+			* )
+				URL="$1"
+				shift
+				OUTPUT_FN="$1"
+				break
+				;;
+		esac
+		shift
+	done
+
+	# Check if mandatory variables are set
+	[[ -z "$URL" ]] && [[ -z "$OUTPUT_FN" ]] && return;
+
+	# Check if start and end time supplied
+	if [[ -n "$START_TIME" && -n "$END_TIME" ]]; then
+		TIME_DIFF=$(expr $END_TIME - $START_TIME_SEC)
+		TIME_ARG="-ss $START_TIME -t $TIME_DIFF"
+
+	elif [[ -n "$START_TIME" ]]; then
+		END_TIME=$(youtube-dl --get-duration "$URL")
+		TIME_ARG="-ss $START_TIME -t $END_TIME"
+	fi
+
+	# Youtube video stream url
+	ffmpeg_url=$(youtube-dl -g "$URL" | sed '1q')
+
+	ffmpeg	\
+	${TIME_ARG} \
+	-i "${ffmpeg_url}" -c copy "${OUTPUT_FN%%.gif}".mp4
+
+	ffmpeg	\
+	-i "${OUTPUT_FN%%.gif}".mp4 \
+	-r 10 -vf scale=512:-1 \
+	"${OUTPUT_FN}"
+
+	rm -i "${OUTPUT_FN%%.gif}".mp4
+
+}
+
