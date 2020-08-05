@@ -132,11 +132,12 @@ if [[ "$HOME" == "/Users/austinraney" ]];then
 	NETCDF=/usr/local/include
 	DYLD_FALLBACK_LIBRARY_PATH=/usr/local/gfortran/lib/
 	NCARG_ROOT=/usr/local/ncl-6.5.0
-	AWSCLI=$HOME/Library/Python/3.6/bin/
+	# AWSCLI=$HOME/Library/Python/3.6/bin/
 	CONDA=$HOME/miniconda3/bin
 	POETRY=$HOME/.poetry/bin
 
-	PATH=$PATH:$AWSCLI:$NCARG_ROOT/bin:$CONDA:$POETRY
+	PATH=$PATH:$NCARG_ROOT/bin:$CONDA:$POETRY
+	# PATH=$PATH:$AWSCLI:$NCARG_ROOT/bin:$CONDA:$POETRY
 	export PATH
 	export NETCDF
 	export NCARG_ROOT
