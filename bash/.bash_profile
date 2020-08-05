@@ -27,7 +27,6 @@ if [ "$HOME" == "/Users/austinraney" ];then
 	export NETCDF
 	export NCARG_ROOT
 	export DYLD_FALLBACK_LIBRARY_PATH
-	export PYTHONPATH="/Users/austinraney/github/si/framework_dev/JobScheduler"
 
 	# nnn file browser shortcuts
 	export NNN_BMS='s:~/box/school/fall19;h:~/github;b:~/box;d:~/Dropbox'
