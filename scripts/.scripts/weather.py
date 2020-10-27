@@ -48,6 +48,8 @@ def get_current_conditions(
             + f"&apiKey={api_key}"
         )
         res = requests.get(req)
+        if res.status_code != 200:
+            continue
         temp = res.json()["observations"][0]["imperial"]["temp"]
         if temp:
             return temp
