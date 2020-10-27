@@ -69,8 +69,8 @@ ZSH_THEME="robbyrussell"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-git
-poetry
+	git
+	poetry
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -105,7 +105,7 @@ source $ZSH/oh-my-zsh.sh
 bindkey -v
 bindkey '^?' backward-delete-char
 bindkey -a u undo
-bindkey -a '^R' redo
+bindkey '^R' redo
 
 ##################################
 #      .bash_profile imports     #
@@ -122,13 +122,12 @@ export IP=$(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}')
 export HISTFILESIZE=100000
 export HISTSIZE=100000
 
-
 #########################################################
 #							#
 #		ENVIRONMENT VARIABLES			#
 #							#
 #########################################################
-if [[ "$HOME" == "/Users/austinraney" ]];then
+if [[ "$HOME" == "/Users/austinraney" ]]; then
 	NETCDF=/usr/local/include
 	DYLD_FALLBACK_LIBRARY_PATH=/usr/local/gfortran/lib/
 	NCARG_ROOT=/usr/local/ncl-6.5.0
@@ -150,8 +149,8 @@ if [[ "$HOME" == "/Users/austinraney" ]];then
 
 fi
 
-if [[ "$HOME" == "/Users/SDML" ]];then
-	NETCDF=/usr/local/include;
+if [[ "$HOME" == "/Users/SDML" ]]; then
+	NETCDF=/usr/local/include
 	DYLD_LIBRARY_PATH=/Users/SDML/GCC-7.3.0/lib/
 	NCARG_ROOT=/usr/local/ncl-6.5.0
 
@@ -162,15 +161,15 @@ if [[ "$HOME" == "/Users/SDML" ]];then
 fi
 
 # Fuzzy finder history with fzf
-[ -f /usr/local/Cellar/fzf/0.18.0/shell/key-bindings.zsh ] && \
-	source /usr/local/Cellar/fzf/0.18.0/shell/key-bindings.zsh
+FZF_BINARY="$(realpath $(which fzf))"
+FZF_KEYBINDINGS="$(dirname $(dirname $FZF_BINARY))/shell/key-bindings.zsh"
+[ -f $FZF_KEYBINDINGS ] && source $FZF_KEYBINDINGS
 
 PATH=$PATH:/Library/Frameworks/GDAL.framework/Programs/:/Library/Frameworks/GDAL.framework/Versions/2.2/Programs/:$HOME/.tools/:/Library/Frameworks/Python.framework/Versions/3.6/bin:/Library/Frameworks/Python.framework/Versions/3.7/bin
 export PATH
 
 # set grep to never show directories in search
 GREP_OPTIONS="--directories=skip"
-
 
 # Set terminal look
 # export CLICOLOR=1
@@ -185,18 +184,17 @@ export TERM=xterm-256color
 [ -f $HOME/.config/shell/aliasrc ] && source $HOME/.config/shell/aliasrc
 [ -f $HOME/.config/shell/funcrc ] && source $HOME/.config/shell/funcrc
 
-
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('$HOME/miniconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+__conda_setup="$('$HOME/miniconda3/bin/conda' 'shell.bash' 'hook' 2>/dev/null)"
 if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
+	eval "$__conda_setup"
 else
-    if [ -f "$HOME/miniconda3/etc/profile.d/conda.sh" ]; then
-        . "$HOME/miniconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="$HOME/miniconda3/bin:$PATH"
-    fi
+	if [ -f "$HOME/miniconda3/etc/profile.d/conda.sh" ]; then
+		. "$HOME/miniconda3/etc/profile.d/conda.sh"
+	else
+		export PATH="$HOME/miniconda3/bin:$PATH"
+	fi
 fi
 unset __conda_setup
 
