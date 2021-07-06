@@ -7,12 +7,12 @@ export ZSH="$HOME/.oh-my-zsh"
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
+# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 ZSH_THEME="robbyrussell"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in ~/.oh-my-zsh/themes/
+# a theme from this variable instead of looking in $ZSH/themes/
 # If set to an empty array, this variable will have no effect.
 # ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
 
@@ -33,7 +33,7 @@ ZSH_THEME="robbyrussell"
 # export UPDATE_ZSH_DAYS=13
 
 # Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS=true
+# DISABLE_MAGIC_FUNCTIONS="true"
 
 # Uncomment the following line to disable colors in ls.
 # DISABLE_LS_COLORS="true"
@@ -70,7 +70,7 @@ ZSH_THEME="robbyrussell"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
 	git
-	poetry
+	#poetry
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -113,7 +113,6 @@ bindkey '^R' redo
 
 # Set terminal to vim like mode
 export EDITOR="/usr/local/bin/vim"
-# set -o vi
 
 # For running docker container gui's
 export IP=$(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}')
@@ -130,13 +129,15 @@ export HISTSIZE=100000
 if [[ "$HOME" == "/Users/austinraney" ]]; then
 	NETCDF=/usr/local/include
 	DYLD_FALLBACK_LIBRARY_PATH=/usr/local/gfortran/lib/
-	NCARG_ROOT=/usr/local/ncl-6.5.0
+	NCARG_ROOT=/usr/local/ncl-6.5.0/bin
 	# AWSCLI=$HOME/Library/Python/3.6/bin/
 	CONDA=$HOME/miniconda3/bin
 	POETRY=$HOME/.poetry/bin
+	QT=/usr/local/opt/qt/bin
+	GDAL=/Library/Frameworks/GDAL.framework/Programs/:/Library/Frameworks/GDAL.framework/Versions/2.2/Programs/
+	TOOLS=$HOME/.tools
 
-	PATH=$PATH:$NCARG_ROOT/bin:$CONDA:$POETRY
-	# PATH=$PATH:$AWSCLI:$NCARG_ROOT/bin:$CONDA:$POETRY
+	PATH="$PATH:$GDAL:$TOOLS:$NCARG_ROOT:$CONDA:$POETRY:$QT"
 	export PATH
 	export NETCDF
 	export NCARG_ROOT
@@ -149,24 +150,10 @@ if [[ "$HOME" == "/Users/austinraney" ]]; then
 
 fi
 
-if [[ "$HOME" == "/Users/SDML" ]]; then
-	NETCDF=/usr/local/include
-	DYLD_LIBRARY_PATH=/Users/SDML/GCC-7.3.0/lib/
-	NCARG_ROOT=/usr/local/ncl-6.5.0
-
-	PATH=$HOME/.scripts:$HOME/GCC-7.3.0/bin/:$NCARG_ROOT/bin:$PATH
-	export NETCDF
-	export DYLD_LIBRARY_PATH
-	export NCARG_ROOT
-fi
-
 # Fuzzy finder history with fzf
 FZF_BINARY="$(realpath $(which fzf))"
 FZF_KEYBINDINGS="$(dirname $(dirname $FZF_BINARY))/shell/key-bindings.zsh"
 [ -f $FZF_KEYBINDINGS ] && source $FZF_KEYBINDINGS
-
-PATH=$PATH:/Library/Frameworks/GDAL.framework/Programs/:/Library/Frameworks/GDAL.framework/Versions/2.2/Programs/:$HOME/.tools/:/Library/Frameworks/Python.framework/Versions/3.6/bin:/Library/Frameworks/Python.framework/Versions/3.7/bin
-export PATH
 
 # set grep to never show directories in search
 GREP_OPTIONS="--directories=skip"
@@ -186,16 +173,15 @@ export TERM=xterm-256color
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('$HOME/miniconda3/bin/conda' 'shell.bash' 'hook' 2>/dev/null)"
+__conda_setup="$('$HOME/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
-	eval "$__conda_setup"
+    eval "$__conda_setup"
 else
-	if [ -f "$HOME/miniconda3/etc/profile.d/conda.sh" ]; then
-		. "$HOME/miniconda3/etc/profile.d/conda.sh"
-	else
-		export PATH="$HOME/miniconda3/bin:$PATH"
-	fi
+    if [ -f "$HOME/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "$HOME/miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="$HOME/miniconda3/bin:$PATH"
+    fi
 fi
 unset __conda_setup
 
-export PATH="/usr/local/opt/qt/bin:$PATH"
