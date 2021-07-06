@@ -7,5 +7,5 @@ defaults write com.apple.dock persistent-apps -array-add '{"tile-type"="spacer-t
 # Finder path in title bar
 defaults write com.apple.finder _FXShowPosixPathInTitle -bool true; killall Finder
 
-# Keyboard 
+# Keyboard disable press and hold for special characters
 defaults write -g ApplePressAndHoldEnabled -bool false
