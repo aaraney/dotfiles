@@ -1,0 +1,124 @@
+# Open applications using bindings
+cmd + alt - t : open -a terminal
+cmd + alt - b : export MOZ_DISABLE_SAFE_MODE_KEY=0 && open -a firefox
+cmd + alt - s : open -a slack
+cmd + alt - n : open -a notes
+cmd + shift - v: pbpaste | sed -E 's/ +/ /g; s/ *$//g' | tr -d '\n' | pbcopy
+
+# remap tmux prefix key to cmd - d 
+cmd - d [
+    "Terminal": skhd -k "ctrl - b"
+]
+
+# remap firefox switch browser tab
+alt - space [
+    "Firefox": skhd -k "ctrl - tab"
+]
+alt + shift - space [
+    "Firefox": skhd -k "ctrl + shift - tab"
+]
+
+# remap firefox back button
+# alt - backspace [
+#     "Firefox": skhd -k "cmd - left"
+# ]
+
+# remap firefox close tab
+alt - w [
+    "Firefox": skhd -k "cmd - w"
+]
+
+# remap toggle js plugin in firefox
+# 0x2C : /
+# 0x12 : 1
+alt - 0x2C [
+    "Firefox": skhd -k "alt + shift - 0x12"
+]
+
+# remap 'hide' to cmd + alt - h
+# cmd + alt - h : osascript -e "tell application \"Finder\" to set frontProcess to first process whose frontmost is true" -e "tell application \"Finder\" to set visible of frontProcess to false"
+
+# yabai configuration
+
+# restart yabai
+alt - r : brew services restart yabai
+
+# stop yabai
+alt - s : brew services stop yabai
+
+# focus window
+alt - k : yabai -m window --focus north
+alt - j : yabai -m window --focus south
+alt - h : yabai -m window --focus west
+alt - l : yabai -m window --focus east
+
+# swap managed window
+alt + shift - k : yabai -m window --swap north
+alt + shift - j : yabai -m window --swap south
+alt + shift - h : yabai -m window --swap west
+alt + shift - l : yabai -m window --swap east
+
+# move managed window
+# shift + cmd - h : yabai -m window --warp east
+
+# balance size of windows
+alt - b : yabai -m space --balance
+
+# make floating window fill screen
+# shift + alt - up     : yabai -m window --grid 1:1:0:0:1:1
+
+# make floating window fill left-half of screen
+# shift + alt - left   : yabai -m window --grid 1:2:0:0:1:1
+
+# create desktop, move window and follow focus - uses jq for parsing json (brew install jq)
+# shift + cmd - n : yabai -m space --create && \
+#                   index="$(yabai -m query --spaces --display | jq 'map(select(."native-fullscreen" == 0))[-1].index')" && \
+#                   yabai -m window --space "${index}" && \
+#                   yabai -m space --focus "${index}"
+
+# fast focus desktop
+# cmd + alt - x : yabai -m space --focus recent
+# cmd + alt - 1 : yabai -m space --focus 1
+
+# send window to desktop and follow focus
+# shift + cmd - z : yabai -m window --space next; yabai -m space --focus next
+# shift + cmd - 2 : yabai -m window --space  2; yabai -m space --focus 2
+
+# focus monitor
+alt - i  : yabai -m display --focus 1
+alt - u  : yabai -m display --focus 2
+
+# send window to monitor and follow focus
+alt + shift - i : yabai -m window --display 1; yabai -m display --focus 1
+alt + shift - u : yabai -m window --display 2; yabai -m display --focus 2
+
+# move floating window
+# shift + ctrl - a : yabai -m window --move rel:-20:0
+# shift + ctrl - s : yabai -m window --move rel:0:20
+
+# increase / decrease window size
+alt + cmd - h : yabai -m window west --resize right:-20:0 2> /dev/null || yabai -m window --resize right:-20:0
+alt + cmd - j : yabai -m window north --resize bottom:0:20 2> /dev/null || yabai -m window --resize bottom:0:20
+alt + cmd - k : yabai -m window south --resize top:0:-20 2> /dev/null || yabai -m window --resize top:0:-20
+alt + cmd - l : yabai -m window east --resize left:20:0 2> /dev/null || yabai -m window --resize left:20:0
+
+# set insertion point in focused container
+# ctrl + alt - h : yabai -m window --insert west
+
+# toggle window zoom
+# alt - f : yabai -m window --toggle zoom-parent
+alt - return : yabai -m window --toggle zoom-fullscreen
+# alt - f : yabai -m window --toggle zoom-fullscreen
+
+# toggle window split type
+# alt - e : yabai -m window --toggle split
+
+# float / unfloat window and center on screen
+alt - m : yabai -m window --toggle float;\
+          yabai -m window --grid 6:5:1:1:3:4
+
+# toggle sticky(+float), topmost, picture-in-picture
+# alt - p : yabai -m window --toggle sticky;\
+#           yabai -m window --toggle topmost;\
+#           yabai -m window --toggle pip
+
