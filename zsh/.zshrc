@@ -145,10 +145,11 @@ if [[ "$HOME" == "/Users/austinraney" ]]; then
 
 	# nnn file browser shortcuts
 	export NNN_BMS='s:~/box/school/fall19;h:~/github;b:~/box;d:~/Dropbox'
-	export NNN_CONTEXT_COLORS='2222'
-	export NNN_TMPFILE="$HOME/.config/nnn/.lastd"
 
 fi
+
+export NNN_CONTEXT_COLORS='2222'
+export NNN_TMPFILE="$HOME/.config/nnn/.lastd"
 
 # Fuzzy finder history with fzf
 FZF_BINARY="$(realpath $(which fzf))"
@@ -185,3 +186,5 @@ else
 fi
 unset __conda_setup
 
+[[ /usr/local/bin/kubectl ]] && source <(kubectl completion zsh)
+[[ /usr/local/bin/helm ]] && source <(helm completion zsh)
