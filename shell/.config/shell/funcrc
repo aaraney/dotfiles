@@ -2,6 +2,10 @@
 
 # functions
 
+skim(){
+	# open a file (most likely a pdf) in skim
+	open -a /Applications/Skim.app "${1}"
+}
 n(){
 # Resolves issue with nnn not being able to
 # quit and cd to a directory. GitHub issues seems
