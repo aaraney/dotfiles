@@ -13,9 +13,11 @@ cmd - d [
 # remap firefox switch browser tab
 alt - space [
     "Firefox": skhd -k "ctrl - tab"
+    "Google Chrome": skhd -k "ctrl - tab"
 ]
 alt + shift - space [
     "Firefox": skhd -k "ctrl + shift - tab"
+    "Google Chrome": skhd -k "ctrl + shift - tab"
 ]
 
 # remap firefox back button
@@ -26,6 +28,7 @@ alt + shift - space [
 # remap firefox close tab
 alt - w [
     "Firefox": skhd -k "cmd - w"
+    "Google Chrome": skhd -k "cmd - w"
 ]
 
 # remap toggle js plugin in firefox
