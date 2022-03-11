@@ -10,6 +10,10 @@ call plug#end()
 set background=dark
 colorscheme hybrid_material
 
+" Set textwidth to 100
+set textwidth=100
+set colorcolumn=100
+
 set nocompatible
 syntax on
 
@@ -35,7 +39,7 @@ noremap <C-J> <C-W><C-J>
 noremap <C-K> <C-W><C-K>
 
 " Markdown and Latex linewidth setting
-au BufReadPost,BufNewFile *.md,*.txt,*.tex setlocal tw=70
+" au BufReadPost,BufNewFile *.md,*.txt,*.tex setlocal tw=70
 
 " Neomutt textwidth settings
 au FileType mail setlocal tw=0
@@ -79,6 +83,12 @@ autocmd FileType markdown nmap ;l I*<space>
 autocmd FileType markdown noremap ;ig i\includegraphics[width=.<++>\textwidth]{<++>}<Esc>B
 autocmd FileType markdown noremap ;f i\begin{figure}<CR><++><CR>\end{figure}<Esc>?begin<CR> 0
 
+" Filetype editor behavior for Markdown
+autocmd FileType markdown setlocal expandtab tabstop=2 shiftwidth=2 expandtab
+
+" Filetype editor behavior for Yaml
+autocmd FileType yaml setlocal expandtab tabstop=2 shiftwidth=2 expandtab
+
 " Filetype key remapping for vi mode terminal
 " Quit and don't execute command
 autocmd FileType sh noremap ;qq :cq<CR> 
@@ -113,7 +123,8 @@ noremap <leader>q :q<Esc>
 " map <C-s> :source $HOME/.vimrc
 vnoremap <C-c> "+y<Esc>
 
-nmap <C-m> :Goyo<cr>
+" command+shift-c to toggle goyo
+nmap <leader>m :Goyo 100<cr>
 
 " ascii headers!
 nmap <leader>;a o<Esc><Esc>57i#<Esc><Esc>o#<Esc>7a	<Esc><Esc>a#<Esc>yy2p3lx<leader>D2kyy3jp4k0
