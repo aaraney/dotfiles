@@ -2,10 +2,47 @@
 
 # functions
 
+gcloud_switch_cluster(){
+	# switch kubectl current-context
+
+	available_clusters=$(gcloud container clusters list --format=json | jq '[.[] | {name, zone}]')
+	cluster_names=$(echo $available_clusters | jq -r '.[] | [.name] | @tsv')
+
+	cluster_choice=$(echo $cluster_names | fzf)
+	exit_status=$?
+
+	if [ $exit_status -eq 0 ]; 
+	then
+		cluster_zone=$(echo $available_clusters | jq -r --arg NAME "$cluster_choice" '.[] | select(.name == $NAME) | .zone')
+
+		# switch gcloud cluster
+		gcloud container clusters get-credentials "$cluster_choice" --zone "$cluster_zone"
+	else
+		echo "zone not changed"
+	fi
+	
+}
+
+ghi(){
+
+	issue=$(gh issue list "${@}" --json number,title,state,author --template \
+		'{{range .}}{{tablerow (printf "#%v" .number | autocolor "green") .title .state
+			.author.login}}{{end}}' | \
+		fzf)
+	issue_number=$(echo ${issue} | awk '{gsub("#", ""); print $1}')
+	gh issue view ${issue_number} --comments
+}
+
+firefox(){
+	# open a file in firefox
+	open -a /Applications/Firefox.app "${1}"
+}
+
 skim(){
 	# open a file (most likely a pdf) in skim
 	open -a /Applications/Skim.app "${1}"
 }
+
 n(){
 # Resolves issue with nnn not being able to
 # quit and cd to a directory. GitHub issues seems
@@ -17,12 +54,11 @@ n(){
         rm $NNN_TMPFILE
     fi
 }
-nwmd(){
-	docker run --rm -it -v "$(pwd)":/replica --entrypoint "/bin/sh" aaraney/nwm-djs:2.0
-}
-cite_author(){
-	echo "$*" | sed -E "s/[0-9]+//g" | tr ',' '\n' | sed -E 's/^ +//g' | awk -F " " '{sn=$NF; $NF=""; print sn", "$0}' | tee >(pbcopy)
-}
+
+# cite_author(){
+# 	echo "$*" | sed -E "s/[0-9]+//g" | tr ',' '\n' | sed -E 's/^ +//g' | awk -F " " '{sn=$NF; $NF=""; print sn", "$0}' | tee >(pbcopy)
+# }
+
 fo(){
 
 	f=$(fzf)
@@ -38,6 +74,7 @@ fo(){
 		:
 	fi
 }
+
 ff(){
 	f=$(fzf)
 	if [ $? -eq 0 ]; then
@@ -46,71 +83,72 @@ ff(){
 		:
 	fi
 }
-panpdf(){
-if [ $# -eq 1 ];
-then
-	pandoc "$1" --pdf-engine=xelatex -o "${1%.md}".pdf && open -a /Applications/Skim.app "${1%.md}.pdf"
-elif [ "$1" = "-g" ]; then
-	pandoc "$2" --pdf-engine=xelatex --from gfm -o "${2%.md}".pdf && open -a /Applications/Skim.app "${2%.md}.pdf"
-fi
-}
 
-qfind(){
-	find "$1" -iname "$2" 2>&1 | grep -v "Permission denied"
-}
+# panpdf(){
+# if [ $# -eq 1 ];
+# then
+# 	pandoc "$1" --pdf-engine=xelatex -o "${1%.md}".pdf && open -a /Applications/Skim.app "${1%.md}.pdf"
+# elif [ "$1" = "-g" ]; then
+# 	pandoc "$2" --pdf-engine=xelatex --from gfm -o "${2%.md}".pdf && open -a /Applications/Skim.app "${2%.md}.pdf"
+# fi
+# }
 
-homeworktex(){
-	cp $HOME/Dropbox/latex/documents/doc_temp.tex ./"$1".tex
-}
+# qfind(){
+# 	find "$1" -iname "$2" 2>&1 | grep -v "Permission denied"
+# }
 
-note(){
-	cp $HOME/Dropbox/markdown/notes-template.md ./"$1".md
-}
+# homeworktex(){
+# 	cp $HOME/Dropbox/latex/documents/doc_temp.tex ./"$1".tex
+# }
 
-se() {
-	du -a $HOME/docs/ $HOME/Downloads/ | awk '{print $2}' | fzf | xargs -o $EDITOR ;
-}
+# note(){
+# 	cp $HOME/Dropbox/markdown/notes-template.md ./"$1".md
+# }
 
-so() {
-	du -a $HOME/docs/ $HOME/Downloads/ | awk '{print $2}' | fzf | xargs -o open ;
-}
+# se() {
+# 	du -a $HOME/docs/ $HOME/Downloads/ | awk '{print $2}' | fzf | xargs -o $EDITOR ;
+# }
 
-homeworkmd(){
-	cp $HOME/Dropbox/markdown/template.md ./"$1".md
-}
+# so() {
+# 	du -a $HOME/docs/ $HOME/Downloads/ | awk '{print $2}' | fzf | xargs -o open ;
+# }
 
-beamer(){
-	cp $HOME/Dropbox/latex/beamer/beamer_template/beamer_template.tex ./"$1".tex
-}
+# homeworkmd(){
+# 	cp $HOME/Dropbox/markdown/template.md ./"$1".md
+# }
 
-nodata(){
-	gdal_calc.py -A "$1" --outfile="${1%.tif}"_fixed.tif --calc="A*(A>0)"
-}
+# beamer(){
+# 	cp $HOME/Dropbox/latex/beamer/beamer_template/beamer_template.tex ./"$1".tex
+# }
 
-ns(){
-# Remove extra spaces from messed up keyboard
-echo "$1" | sed -E 's/  +/ /g' | pbcopy
-}
+# nodata(){
+# 	gdal_calc.py -A "$1" --outfile="${1%.tif}"_fixed.tif --calc="A*(A>0)"
+# }
+
+# ns(){
+# # Remove extra spaces from messed up keyboard
+# echo "$1" | sed -E 's/  +/ /g' | pbcopy
+# }
 
 v(){
-	gvim -v "$1"
+	vim "$1"
 }
 
-pptx_to_pdf(){
-	soffice --headless --invisible --convert-to pdf "$1" "${1%.pptx}".pdf
-}
+# pptx_to_pdf(){
+# 	soffice --headless --invisible --convert-to pdf "$1" "${1%.pptx}".pdf
+# }
 
 pdf(){
 	open -a /Applications/Skim.app "$1"
 }
 
-pantex(){
-	pandoc -r markdown-auto_identifiers -w latex "$1" -s --template="$HOME/Dropbox/latex/documents/template.latex" -t latex > "${1%.md}".tex
-}
+# pantex(){
+# 	pandoc -r markdown-auto_identifiers -w latex "$1" -s --template="$HOME/Dropbox/latex/documents/template.latex" -t latex > "${1%.md}".tex
+# }
 
-var(){ 
-	egrep "(float|short|int|double|char)"
-}
+# var(){ 
+# 	egrep "(float|short|int|double|char)"
+# }
 
 youtube_gif(){
 	# Takes in youtube url and a file fame and outputs a gif
