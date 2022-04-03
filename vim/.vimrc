@@ -1,10 +1,21 @@
 call plug#begin('~/.vim/plug')
-Plug 'tpope/vim-surround'
-Plug 'scrooloose/nerdtree'
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
 Plug 'junegunn/goyo.vim'
-Plug 'raimondi/delimitmate' " Complete braces and quotes
 Plug 'kristijanhusak/vim-hybrid-material' " Color scheme
+Plug 'raimondi/delimitmate' " Complete braces and quotes
+Plug 'scrooloose/nerdtree'
+Plug 'tpope/vim-surround'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'w0rp/ale'
 call plug#end()
+
+" enable airline tabline
+let g:airline#extensions#tabline#enabled = 1
+
+" change airline default theme
+let g:airline_theme='minimalist'
 
 " Colorscheme setup
 set background=dark
@@ -22,6 +33,31 @@ filetype plugin on
 set number relativenumber
 let mapleader="\<Space>" 
 
+" open fzf.vim files based on current context
+" if in git repo, use :GitFiles else :Files
+function SmartFiles()
+	let git_status = system("git status")
+	if v:shell_error != 0
+		" current directory context
+		Files
+	else
+		" full git repo context
+		GitFiles
+	endif
+endfunction
+
+" open fzf with leader - p
+noremap <leader>p :call SmartFiles() <cr>
+
+" toggle between buffers
+nnoremap <leader>t :bn<cr>
+nnoremap <leader>T :bp<cr>
+
+" close current buffer
+command! CloseBufferOrExit :echo len(getbufinfo({'buflisted':1})) > 1 ? execute('bd') : execute('q')
+nnoremap <leader>w :CloseBufferOrExit <cr>
+
+
 " Enables the use of tab complete in normal mode
 set wildmode=longest,list,full
 set wildmenu " In normal mode : + tab will open small window with options
@@ -38,6 +74,11 @@ noremap <C-L> <C-W><C-L>
 noremap <C-J> <C-W><C-J>
 noremap <C-K> <C-W><C-K>
 
+" python fixing
+let g:ale_python_black_executable = '/usr/local/Caskroom/miniconda/base/envs/vscode_utils/bin/black'
+let g:ale_fixers = {'python': ['black']}
+let g:ale_fix_on_save = 1
+
 " Markdown and Latex linewidth setting
 " au BufReadPost,BufNewFile *.md,*.txt,*.tex setlocal tw=70
 
@@ -47,7 +88,6 @@ au FileType mail :Goyo 65
 
 " Open to the last line left
 au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
-
 
 " Filetype key remapping
 " compiler key mapping
@@ -107,24 +147,32 @@ noremap <leader>S :set spell! spelllang=en_us <CR>
 
 " General key remapping
 noremap <leader><S-b> :!open -a /Applications/Skim.app %:r.pdf<CR><CR>
+
+" vim surround word with something
+nmap <leader><C-s> ysiw
 nmap yssb yss}
 nmap ysiwb ysiw}
+
 noremap <leader>f :NERDTreeToggle<CR>
-noremap <leader><leader> /<++><CR>ca<
-nmap <leader>d i<++><Esc>b
-nmap <leader>D a<++><Esc>b
+
+" noremap <leader><leader> /<++><CR>ca<
+" nmap <leader>d i<++><Esc>b
+" nmap <leader>D a<++><Esc>b
+
 nmap <leader>o o<Esc>
 nmap <leader>O O<Esc>
 noremap <leader>c I# <Esc>0
+
+" saving and quiting remaps
 noremap <leader>s :w<Esc>
-" noremap <leader>S :wq<CR>
 noremap <leader>q :q<Esc>
 
 " map <C-s> :source $HOME/.vimrc
 vnoremap <C-c> "+y<Esc>
 
 " command+shift-c to toggle goyo
-nmap <leader>m :Goyo 100<cr>
+nmap <leader>m :Goyo <cr>
+let g:goyo_width = 120
 
 " ascii headers!
 nmap <leader>;a o<Esc><Esc>57i#<Esc><Esc>o#<Esc>7a	<Esc><Esc>a#<Esc>yy2p3lx<leader>D2kyy3jp4k0
