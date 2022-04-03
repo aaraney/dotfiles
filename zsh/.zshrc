@@ -112,7 +112,7 @@ bindkey '^R' redo
 ##################################
 
 # Set terminal to vim like mode
-export EDITOR="/usr/local/bin/vim"
+export EDITOR="nvim"
 
 # For running docker container gui's
 export IP=$(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}')
@@ -188,3 +188,9 @@ unset __conda_setup
 
 [[ /usr/local/bin/kubectl ]] && source <(kubectl completion zsh)
 [[ /usr/local/bin/helm ]] && source <(helm completion zsh)
+[[ /usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc ]] && source /usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc
+[[ /usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc ]] && source /usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc
+export PATH="/usr/local/opt/curl/bin:$PATH"
+
+autoload -U +X bashcompinit && bashcompinit
+complete -o nospace -C /usr/local/bin/terraform terraform
