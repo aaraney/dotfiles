@@ -2,6 +2,24 @@
 
 # functions
 
+gsp(){
+	# swithc gcp project
+
+	available_projects=$(gcloud projects list | tail +2 | awk '{print $1}')
+	project_choice=$(echo $available_projects | fzf)
+
+	exit_status=$?
+
+	if [ $exit_status -eq 0 ]; 
+	then
+		# switch gcloud project
+		gcloud config set project "${project_choice}"
+	else
+		echo "project not changed"
+	fi
+	
+}
+
 gcloud_switch_cluster(){
 	# switch kubectl current-context
 
