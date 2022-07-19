@@ -1,7 +1,7 @@
 # Open applications using bindings
 cmd + alt - t : open -a terminal
 cmd + alt - b : export MOZ_DISABLE_SAFE_MODE_KEY=0 && open -a firefox
-cmd + alt - s : open -a slack
+# cmd + alt - s : open -a slack
 cmd + alt - n : open -a notes
 cmd + shift - v: pbpaste | sed -E 's/ +/ /g; s/ *$//g' | tr -d '\n' | pbcopy
 
@@ -41,13 +41,18 @@ alt - 0x2C [
 # remap 'hide' to cmd + alt - h
 # cmd + alt - h : osascript -e "tell application \"Finder\" to set frontProcess to first process whose frontmost is true" -e "tell application \"Finder\" to set visible of frontProcess to false"
 
+# moonlander movement remaps
+meh - h : skhd -k "alt - left"
+meh - l : skhd -k "alt - right"
+meh - backspace : skhd -k "alt - backspace"
+
 # yabai configuration
 
 # restart yabai
 alt - r : brew services restart yabai
 
 # stop yabai
-alt - s : brew services stop yabai
+cmd + alt - s : brew services stop yabai
 
 # focus window
 alt - k : yabai -m window --focus north

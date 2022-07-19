@@ -194,3 +194,8 @@ export PATH="/usr/local/opt/curl/bin:$PATH"
 
 autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C /usr/local/bin/terraform terraform
+
+complete -o nospace -C /usr/local/bin/mc mc
+
+# Add go binary path
+export PATH="$HOME/go/bin/:$PATH"
