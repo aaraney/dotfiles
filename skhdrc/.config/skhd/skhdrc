@@ -5,9 +5,17 @@ cmd + alt - b : export MOZ_DISABLE_SAFE_MODE_KEY=0 && open -a firefox
 cmd + alt - n : open -a notes
 cmd + shift - v: pbpaste | sed -E 's/ +/ /g; s/ *$//g' | tr -d '\n' | pbcopy
 
-# remap tmux prefix key to cmd - d 
-cmd - d [
+# remap tmux prefix key to cmd - a
+cmd - a [
     "Terminal": skhd -k "ctrl - b"
+]
+
+cmd - u [
+    "Terminal": skhd -k "ctrl - e"
+]
+
+cmd + alt - u  [
+    "Terminal": skhd -k "ctrl - o"
 ]
 
 # remap firefox switch browser tab
@@ -44,6 +52,8 @@ alt - 0x2C [
 # moonlander movement remaps
 meh - h : skhd -k "alt - left"
 meh - l : skhd -k "alt - right"
+meh - s : skhd -k "cmd - left"
+meh - g : skhd -k "cmd - right"
 meh - backspace : skhd -k "alt - backspace"
 
 # yabai configuration
