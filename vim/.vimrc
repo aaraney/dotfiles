@@ -9,13 +9,31 @@ Plug 'tpope/vim-surround'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'w0rp/ale'
+Plug 'tpope/vim-commentary'
+
+" lsp plugins
+Plug 'neovim/nvim-lspconfig'
+
+" completion plugins
+Plug 'hrsh7th/nvim-cmp'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
+
+" lua snips
+Plug 'L3MON4D3/LuaSnip'
 call plug#end()
 
 " enable airline tabline
 let g:airline#extensions#tabline#enabled = 1
 
+
 " change airline default theme
 let g:airline_theme='minimalist'
+
+" completion options
+set completeopt=menu,menuone,noselect
 
 " Colorscheme setup
 set background=dark
@@ -25,6 +43,12 @@ colorscheme hybrid_material
 set textwidth=100
 set colorcolumn=100
 
+" use 4 spaces instead of a tab
+set shiftwidth=4
+set softtabstop=4
+set tabstop=4
+set expandtab
+
 set nocompatible
 syntax on
 
@@ -32,6 +56,15 @@ filetype plugin on
 
 set number relativenumber
 let mapleader="\<Space>" 
+
+" persistent undo
+set undofile
+set undodir=~/.vim/undodir
+
+" lsp imports
+lua require("key_remaps")
+" completions
+lua require("nvim_cmp")
 
 " open fzf.vim files based on current context
 " if in git repo, use :GitFiles else :Files
@@ -75,9 +108,16 @@ noremap <C-J> <C-W><C-J>
 noremap <C-K> <C-W><C-K>
 
 " python fixing
-let g:ale_python_black_executable = '/usr/local/Caskroom/miniconda/base/envs/vscode_utils/bin/black'
-let g:ale_fixers = {'python': ['black']}
-let g:ale_fix_on_save = 1
+" let g:ale_python_black_executable = '/usr/local/Caskroom/miniconda/base/envs/vscode_utils/bin/black'
+" let g:ale_fixers = {'python': ['black']}
+" let g:ale_fix_on_save = 1
+" let g:ale_linters = {
+" \ 'go' : ['gopls'],
+" \}
+
+" ale config
+" let g:ale_completion_enabled = 1
+" let g:ale_completion_autoimport = 1
 
 " Markdown and Latex linewidth setting
 " au BufReadPost,BufNewFile *.md,*.txt,*.tex setlocal tw=70
@@ -159,9 +199,7 @@ noremap <leader>f :NERDTreeToggle<CR>
 " nmap <leader>d i<++><Esc>b
 " nmap <leader>D a<++><Esc>b
 
-nmap <leader>o o<Esc>
-nmap <leader>O O<Esc>
-noremap <leader>c I# <Esc>0
+map <leader>c gcc
 
 " saving and quiting remaps
 noremap <leader>s :w<Esc>
