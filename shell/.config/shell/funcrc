@@ -2,6 +2,19 @@
 
 # functions
 
+todos(){
+	TODOS_DIR=${HOME}/.config/todos
+	TODOS_FILE=${TODOS_DIR}/todos
+
+	if [ ! -f "${TODOS_FILE}" ]; then
+	    mkdir -p ${TODOS_DIR}
+	    touch TODOS_FILE
+	fi
+
+	vim "${TODOS_FILE}"
+
+}
+
 gsp(){
 	# swithc gcp project
 
