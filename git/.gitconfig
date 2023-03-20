@@ -1,2 +1,4 @@
 [user]
 	name = Austin Raney
+[init]
+	defaultBranch = main
