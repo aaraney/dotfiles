@@ -2,7 +2,7 @@ call plug#begin('~/.vim/plug')
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/goyo.vim'
-Plug 'kristijanhusak/vim-hybrid-material' " Color scheme
+" Plug 'kristijanhusak/vim-hybrid-material' " Color scheme
 Plug 'raimondi/delimitmate' " Complete braces and quotes
 Plug 'scrooloose/nerdtree'
 Plug 'tpope/vim-surround'
@@ -10,6 +10,7 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'w0rp/ale'
 Plug 'tpope/vim-commentary'
+Plug 'wojciechkepka/vim-github-dark'
 
 " lsp plugins
 Plug 'neovim/nvim-lspconfig'
@@ -36,12 +37,14 @@ let g:airline_theme='minimalist'
 set completeopt=menu,menuone,noselect
 
 " Colorscheme setup
-set background=dark
-colorscheme hybrid_material
+" set background=dark
+" colorscheme hybrid_material
+let g:gh_color="soft"
+colorscheme ghdark
 
 " Set textwidth to 100
 set textwidth=100
-set colorcolumn=100
+" set colorcolumn=100
 
 " use 4 spaces instead of a tab
 set shiftwidth=4
