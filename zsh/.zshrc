@@ -187,7 +187,7 @@ fi
 unset __conda_setup
 
 [[ /usr/local/bin/kubectl ]] && source <(kubectl completion zsh)
-[[ /usr/local/bin/helm ]] && source <(helm completion zsh)
+# [[ /usr/local/bin/helm ]] && source <(helm completion zsh)
 [[ /usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc ]] && source /usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc
 [[ /usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc ]] && source /usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc
 export PATH="/usr/local/opt/curl/bin:$PATH"
