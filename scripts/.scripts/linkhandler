@@ -1,4 +1,0 @@
-#!/bin/bash
-
-osascript -e "tell application \"Safari\" to Activate" | \
-osascript -e "tell application \"Safari\" to open location \""${1}"\""
