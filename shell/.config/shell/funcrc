@@ -1,57 +1,42 @@
 #!/usr/bin/env bash
 
 # functions
-
-todos(){
-	TODOS_DIR=${HOME}/.config/todos
-	TODOS_FILE=${TODOS_DIR}/todos
-
-	if [ ! -f "${TODOS_FILE}" ]; then
-	    mkdir -p ${TODOS_DIR}
-	    touch TODOS_FILE
-	fi
-
-	vim "${TODOS_FILE}"
-
+venv(){
+    if [[ "$(uname -m)" == "arm64" ]]; then
+        pyenv shell 3.10 && python -m venv venv && pyenv shell --unset && source ./venv/bin/activate && ./venv/bin/python -m pip install -U pip
+    else
+        conda activate 3.9 && python -m venv venv && conda deactivate && source ./venv/bin/activate && ./venv/bin/python -m pip install -U pip
+    fi
 }
 
-gsp(){
-	# swithc gcp project
-
-	available_projects=$(gcloud projects list | tail +2 | awk '{print $1}')
-	project_choice=$(echo $available_projects | fzf)
-
-	exit_status=$?
-
-	if [ $exit_status -eq 0 ]; 
-	then
-		# switch gcloud project
-		gcloud config set project "${project_choice}"
-	else
-		echo "project not changed"
-	fi
-	
+ace(){
+    ace=$(/Users/austinraney/github/personal/activate/activate) && source "${ace}"
+    unset ace
 }
 
-gcloud_switch_cluster(){
-	# switch kubectl current-context
+_git_rebase_origin(){
+    git rebase origin/${1}
+}
 
-	available_clusters=$(gcloud container clusters list --format=json | jq '[.[] | {name, zone}]')
-	cluster_names=$(echo $available_clusters | jq -r '.[] | [.name] | @tsv')
+_git_rebase_upstream(){
+    git rebase upstream/${1}
+}
 
-	cluster_choice=$(echo $cluster_names | fzf)
-	exit_status=$?
+_git_fetch_origin(){
+    git fetch origin "${@}" 
+}
 
-	if [ $exit_status -eq 0 ]; 
-	then
-		cluster_zone=$(echo $available_clusters | jq -r --arg NAME "$cluster_choice" '.[] | select(.name == $NAME) | .zone')
+_git_fetch_upstream(){
+    git fetch upstream "${@}" 
+}
 
-		# switch gcloud cluster
-		gcloud container clusters get-credentials "$cluster_choice" --zone "$cluster_zone"
-	else
-		echo "zone not changed"
-	fi
-	
+alias gro="_git_rebase_origin"
+alias gru="_git_rebase_upstream"
+alias gfo="_git_fetch_origin"
+alias gfu="_git_fetch_upstream"
+
+nproc(){
+    sysctl -n hw.logicalcpu
 }
 
 ghi(){
@@ -62,16 +47,6 @@ ghi(){
 		fzf)
 	issue_number=$(echo ${issue} | awk '{gsub("#", ""); print $1}')
 	gh issue view ${issue_number} --comments
-}
-
-firefox(){
-	# open a file in firefox
-	open -a /Applications/Firefox.app "${1}"
-}
-
-skim(){
-	# open a file (most likely a pdf) in skim
-	open -a /Applications/Skim.app "${1}"
 }
 
 n(){
@@ -85,10 +60,6 @@ n(){
         rm $NNN_TMPFILE
     fi
 }
-
-# cite_author(){
-# 	echo "$*" | sed -E "s/[0-9]+//g" | tr ',' '\n' | sed -E 's/^ +//g' | awk -F " " '{sn=$NF; $NF=""; print sn", "$0}' | tee >(pbcopy)
-# }
 
 fo(){
 
@@ -115,71 +86,9 @@ ff(){
 	fi
 }
 
-# panpdf(){
-# if [ $# -eq 1 ];
-# then
-# 	pandoc "$1" --pdf-engine=xelatex -o "${1%.md}".pdf && open -a /Applications/Skim.app "${1%.md}.pdf"
-# elif [ "$1" = "-g" ]; then
-# 	pandoc "$2" --pdf-engine=xelatex --from gfm -o "${2%.md}".pdf && open -a /Applications/Skim.app "${2%.md}.pdf"
-# fi
-# }
-
-# qfind(){
-# 	find "$1" -iname "$2" 2>&1 | grep -v "Permission denied"
-# }
-
-# homeworktex(){
-# 	cp $HOME/Dropbox/latex/documents/doc_temp.tex ./"$1".tex
-# }
-
-# note(){
-# 	cp $HOME/Dropbox/markdown/notes-template.md ./"$1".md
-# }
-
-# se() {
-# 	du -a $HOME/docs/ $HOME/Downloads/ | awk '{print $2}' | fzf | xargs -o $EDITOR ;
-# }
-
-# so() {
-# 	du -a $HOME/docs/ $HOME/Downloads/ | awk '{print $2}' | fzf | xargs -o open ;
-# }
-
-# homeworkmd(){
-# 	cp $HOME/Dropbox/markdown/template.md ./"$1".md
-# }
-
-# beamer(){
-# 	cp $HOME/Dropbox/latex/beamer/beamer_template/beamer_template.tex ./"$1".tex
-# }
-
-# nodata(){
-# 	gdal_calc.py -A "$1" --outfile="${1%.tif}"_fixed.tif --calc="A*(A>0)"
-# }
-
-# ns(){
-# # Remove extra spaces from messed up keyboard
-# echo "$1" | sed -E 's/  +/ /g' | pbcopy
-# }
-
 v(){
 	vim "$1"
 }
-
-# pptx_to_pdf(){
-# 	soffice --headless --invisible --convert-to pdf "$1" "${1%.pptx}".pdf
-# }
-
-pdf(){
-	open -a /Applications/Skim.app "$1"
-}
-
-# pantex(){
-# 	pandoc -r markdown-auto_identifiers -w latex "$1" -s --template="$HOME/Dropbox/latex/documents/template.latex" -t latex > "${1%.md}".tex
-# }
-
-# var(){ 
-# 	egrep "(float|short|int|double|char)"
-# }
 
 youtube_gif(){
 	# Takes in youtube url and a file fame and outputs a gif
