@@ -73,6 +73,12 @@ plugins=(
 	#poetry
 )
 
+# completions from brew
+FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+
+# completions for go tools
+FPATH="${HOME}/.config/shell/completions:${FPATH}"
+
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
@@ -121,33 +127,6 @@ export IP=$(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}')
 export HISTFILESIZE=100000
 export HISTSIZE=100000
 
-#########################################################
-#							#
-#		ENVIRONMENT VARIABLES			#
-#							#
-#########################################################
-if [[ "$HOME" == "/Users/austinraney" ]]; then
-	NETCDF=/usr/local/include
-	DYLD_FALLBACK_LIBRARY_PATH=/usr/local/gfortran/lib/
-	NCARG_ROOT=/usr/local/ncl-6.5.0/bin
-	# AWSCLI=$HOME/Library/Python/3.6/bin/
-	CONDA=$HOME/miniconda3/bin
-	POETRY=$HOME/.poetry/bin
-	QT=/usr/local/opt/qt/bin
-	GDAL=/Library/Frameworks/GDAL.framework/Programs/:/Library/Frameworks/GDAL.framework/Versions/2.2/Programs/
-	TOOLS=$HOME/.tools
-
-	PATH="$PATH:$GDAL:$TOOLS:$NCARG_ROOT:$CONDA:$POETRY:$QT"
-	export PATH
-	export NETCDF
-	export NCARG_ROOT
-	export DYLD_FALLBACK_LIBRARY_PATH
-
-	# nnn file browser shortcuts
-	export NNN_BMS='s:~/box/school/fall19;h:~/github;b:~/box;d:~/Dropbox'
-
-fi
-
 export NNN_CONTEXT_COLORS='2222'
 export NNN_TMPFILE="$HOME/.config/nnn/.lastd"
 
@@ -172,30 +151,21 @@ export TERM=xterm-256color
 [ -f $HOME/.config/shell/aliasrc ] && source $HOME/.config/shell/aliasrc
 [ -f $HOME/.config/shell/funcrc ] && source $HOME/.config/shell/funcrc
 
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('$HOME/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "$HOME/miniconda3/etc/profile.d/conda.sh" ]; then
-        . "$HOME/miniconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="$HOME/miniconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-
-[[ /usr/local/bin/kubectl ]] && source <(kubectl completion zsh)
-# [[ /usr/local/bin/helm ]] && source <(helm completion zsh)
-[[ /usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc ]] && source /usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc
-[[ /usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc ]] && source /usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc
-export PATH="/usr/local/opt/curl/bin:$PATH"
-
 autoload -U +X bashcompinit && bashcompinit
-complete -o nospace -C /usr/local/bin/terraform terraform
+complete -o nospace -C $(which mc) mc
 
-complete -o nospace -C /usr/local/bin/mc mc
+# zellij alias
+# function zr () { zellij run --name "$*" -- zsh -ic "$*";}
+function zrf () { zellij run --name "$*" --floating -- zsh -ic "$*";}
+# function ze () { zellij edit "$*";}
+# function zef () { zellij edit --floating "$*";}
+
+# nu shell config location
+export XDG_CONFIG_HOME=$HOME/.config/
 
 # Add go binary path
 export PATH="$HOME/go/bin/:$PATH"
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
+eval "$(zoxide init --cmd cd zsh)"

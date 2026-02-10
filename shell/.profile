@@ -1,5 +1,5 @@
 # Set terminal to vim like mode
-export EDITOR="/usr/local/bin/vim"
+export EDITOR="nvim"
 set -o vi
 
 # For running docker container gui's
@@ -19,3 +19,5 @@ export PS1="\[\033[38;5;9m\][\[$(tput sgr0)\]\[\033[38;5;10m\]\u\[$(tput sgr0)\]
 [ -f $HOME/.config/shell/aliasrc ] && source $HOME/.config/shell/aliasrc
 [ -f $HOME/.config/shell/funcrc ] && source $HOME/.config/shell/funcrc
 . "$HOME/.cargo/env"
+
+export SSH_SK_PROVIDER="${HOME}/.local/lib/sk-libfido2.dylib"
