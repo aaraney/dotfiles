@@ -1,5 +1,5 @@
 -- remap gcc to M-/
-vim.keymap.set({ "n", "v" }, "<M-/>", function()
+vim.keymap.set({ "n", "v" }, "<C-/>", function()
     local mode = vim.api.nvim_get_mode()["mode"]
     if mode == "n" then
         vim.cmd("Commentary")

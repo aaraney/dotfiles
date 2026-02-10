@@ -1,15 +1,3 @@
-require('mason-tool-installer').setup {
-    -- a list of all tools you want to ensure are installed upon
-    -- start; they should be the names Mason uses for each tool
-    ensure_installed = {
-        'prettierd',
-        'ruff',
-    },
-    auto_update = true,
-    debounce_hours = 24,
-}
-
-
 -- LSP settings.
 --  This function gets run when an LSP connects to a particular buffer.
 local on_attach = function(_, bufnr)
@@ -24,7 +12,8 @@ local on_attach = function(_, bufnr)
     nmap('<leader>r', vim.lsp.buf.rename, '[R]ename')
     nmap('<leader>a', vim.lsp.buf.code_action, '[C]ode [A]ction')
 
-    nmap('<M-u>', vim.lsp.buf.definition, '[G]oto [D]efinition')
+    -- use <C-t> to go back
+    nmap('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
     nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
     nmap('gI', vim.lsp.buf.implementation, '[G]oto [I]mplementation')
     nmap('<leader>D', vim.lsp.buf.type_definition, 'Type [D]efinition')
@@ -34,9 +23,10 @@ local on_attach = function(_, bufnr)
 
     -- See `:help K` for why this keymap
     nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
-    nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
+    -- was not using this, so commenting out for now
+    -- nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
     -- vscode like remap for completion
-    vim.keymap.set('i', '<C-.>', vim.lsp.buf.completion, { buffer = bufnr })
+    vim.keymap.set('i', '<C-.>', vim.lsp.completion.get, { buffer = bufnr })
 
     -- Lesser used LSP functionality
     nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
@@ -52,6 +42,7 @@ local on_attach = function(_, bufnr)
     end)
 end
 
+
 -- Enable the following language servers
 --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
 --
@@ -60,6 +51,7 @@ end
 local servers = {
     -- clangd = {},
     gopls = {},
+    golangci_lint_ls = {},
     pyright = {
         python = {
             -- all options: https://microsoft.github.io/pyright/#/settings
@@ -71,12 +63,17 @@ local servers = {
     },
     ruff = {},
     rust_analyzer = {},
-    tsserver = {},
+    -- not installed at the moment
+    -- tsserver = {},
     lua_ls = {
         Lua = {
             workspace = { checkThirdParty = false },
             telemetry = { enable = false },
         },
+    },
+    jsonnet_ls = {
+        -- TODO: jsonnet imports
+        -- see: https://github.com/neovim/nvim-lspconfig/blob/7af2c37192deae28d1305ae9e68544f7fb5408e1/lua/lspconfig/configs/jsonnet_ls.lua#L13
     },
 }
 
@@ -94,12 +91,16 @@ require('mason').setup()
 local mason_lspconfig = require 'mason-lspconfig'
 
 local handlers = {
-    function(server_name)
-        require('lspconfig')[server_name].setup {
+    -- temp fix, will go away once I re-write this w/ built-in lsp config
+    ['golangci_lint_ls'] = function()
+        vim.lsp.config('golangci_lint_ls', {
             capabilities = capabilities,
             on_attach = on_attach,
-            settings = servers[server_name],
-        }
+            settings = servers['golangci_lint_ls'],
+            init_options = {
+                command = { 'golangci-lint', 'run', '--output.json.path=stdout', '--show-stats=false' },
+            }
+        })
     end,
     -- Next, you can provide targeted overrides for specific servers.
     ["pyright"] = function()
@@ -144,19 +145,32 @@ local handlers = {
             on_attach(_, bufnr)
         end
 
-        vim.lsp.set_log_level("debug")
-        require("lspconfig")["pyright"].setup {
+        vim.lsp.config("pyright", {
             capabilities = capabilities,
             on_attach = pyright_on_attach,
             settings = servers["pyright"],
-        }
+        })
     end,
 }
 
 mason_lspconfig.setup {
     ensure_installed = vim.tbl_keys(servers),
-    handlers = handlers,
 }
+
+-- setup / configure lsp servers
+-- NOTE: migrate this so this is done lazily
+for server_name, settings in pairs(servers) do
+    local attach_fn = on_attach
+    if handlers[server_name] then
+        attach_fn = handlers[server_name]
+    end
+    vim.lsp.config(server_name, {
+        capabilities = capabilities,
+        on_attach = attach_fn,
+        settings = settings,
+    })
+end
+
 
 -- nvim-cmp setup
 local cmp = require 'cmp'

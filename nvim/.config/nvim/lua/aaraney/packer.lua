@@ -21,8 +21,10 @@ return require('packer').startup(function(use)
         'neovim/nvim-lspconfig',
         requires = {
             -- Automatically install LSPs to stdpath for neovim
-            'williamboman/mason.nvim',
-            'williamboman/mason-lspconfig.nvim',
+            -- 'williamboman/mason.nvim',
+            -- 'williamboman/mason-lspconfig.nvim',
+            'mason-org/mason.nvim',
+            'mason-org/mason-lspconfig.nvim',
 
             -- Useful status updates for LSP
             -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
@@ -33,6 +35,13 @@ return require('packer').startup(function(use)
         }
     }
 
+    -- debug adapter protocol (dap)
+    use 'mfussenegger/nvim-dap'
+    use { "rcarriga/nvim-dap-ui", requires = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" } }
+    use 'theHamsta/nvim-dap-virtual-text'
+
+    -- golang dap
+    use 'leoluz/nvim-dap-go'
 
     use { -- Autocompletion
         'hrsh7th/nvim-cmp',
@@ -67,9 +76,6 @@ return require('packer').startup(function(use)
     -- LSP Formatting package inplace of null-ls
     use 'mhartington/formatter.nvim'
 
-    -- Ensure
-    use "WhoIsSethDaniel/mason-tool-installer.nvim"
-
     -- open to previous line
     use 'ethanholz/nvim-lastplace'
 
@@ -86,11 +92,9 @@ return require('packer').startup(function(use)
 
     -- justfile completions
     use { "NoahTheDuke/vim-just" }
+
     -- file nav
-    use {
-        "nvim-telescope/telescope-file-browser.nvim",
-        requires = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" }
-    }
+    use { "stevearc/oil.nvim" }
 
     -- code diagnostics
     -- return {
@@ -114,4 +118,6 @@ return require('packer').startup(function(use)
 
     -- test out git vim integration
     use { "tpope/vim-fugitive" }
+
+    use { "mg979/vim-visual-multi" }
 end)
